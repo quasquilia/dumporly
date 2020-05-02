@@ -1,9 +1,7 @@
 package com.guarascio.dumporly;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 public class Main {
@@ -16,14 +14,15 @@ public class Main {
         driver.get(baseUrl);
 
         // TODO Perform authentication
-
+        new Authenticator(driver).authenticate();
+/*
         while(true) {
             System.out.println(driver.getCurrentUrl());
             Thread.sleep(5000);
             WebElement element = driver.findElement(By.className("ContentNavigation-title-101_S"));
             element.click();
         }
-
+*/
         //driver.close();
     }
 }
