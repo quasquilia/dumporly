@@ -19,7 +19,7 @@ public class Main {
 
         // TODO Perform authentication
         //new Authenticator(driver).authenticate(userName, password);
-        new Downloader(downloaderDriver).download(baseUrl, fileName);
+        new Downloader(downloaderDriver).download(baseUrl, targetFileName(baseUrl));
 
         /*
         while(true) {
@@ -31,5 +31,10 @@ public class Main {
 */
         Thread.sleep(5000);
         driver.close();
+    }
+
+    private static String targetFileName(String url) {
+        String[] split = url.split("\\-");
+        return split[split.length - 1];
     }
 }

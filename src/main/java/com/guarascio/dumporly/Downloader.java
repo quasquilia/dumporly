@@ -5,21 +5,24 @@ import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
+import java.io.FileFilter;
+import java.nio.file.Path;
+import java.util.*;
 
 public class Downloader {
 
+    private static final String EXTENSION = "mp4";
     private final WebDriver driver;
 
-    public Downloader (WebDriver driver) {
+    public Downloader(WebDriver driver) {
         this.driver = driver;
     }
 
 
-    public void download(String url, String fileName) {
+    public void download(String url, String fileName) throws InterruptedException {
 
-        ((JavascriptExecutor)driver).executeScript("window.open()");
+        ((JavascriptExecutor) driver).executeScript("window.open()");
         ArrayList<String> tabs = new ArrayList<String>(driver.getWindowHandles());
         String originalTab = tabs.get(1);
         driver.switchTo().window(originalTab);
@@ -52,8 +55,33 @@ public class Downloader {
                 .build();
 
         altClick.perform();
+
+        System.out.print("Downloading " + fileName + " ");
+        String downloadFolder = System.getProperty("user.home") + "/Downloads";
+        do {
+            System.out.print(".");
+            Thread.sleep(2000);
+        } while (findDownloadingFiles(downloadFolder, EXTENSION).length > 0);
+        System.out.println("done");
+
+        File downloadedFile = getMostRecentFile(downloadFolder, EXTENSION).get();
+        downloadedFile.renameTo(new File(downloadedFile.getParent(), fileName+ "." + EXTENSION));
     }
 
+    private File[] findDownloadingFiles(String dirName, String extension) {
+        File dir = new File(dirName);
+        return dir.listFiles((dir1, filename) -> filename.endsWith("." + extension + ".crdownload"));
 
+    }
 
+    private Optional<File> getMostRecentFile(String dirName, String extension) {
+        File directory = new File(dirName);
+        File[] files = directory.listFiles(pathname
+                -> pathname.isFile()
+                && pathname.getName().toLowerCase().endsWith(extension.toLowerCase())
+        );
+
+        return Arrays.stream(files)
+                .max(Comparator.comparing(File::lastModified));
+    }
 }
