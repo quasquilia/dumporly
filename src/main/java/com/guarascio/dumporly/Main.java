@@ -9,15 +9,19 @@ public class Main {
         String userName = "";
         String password = "";
         String baseUrl = "https://learning.oreilly.com/videos/clean-code/9780134661742/9780134661742-CODE_01_00_00";
+        String fileName = "prova";
 
         WebDriverManager.chromedriver().version("81").setup();
         WebDriver driver = new ChromeDriver();
+        WebDriver downloaderDriver = new ChromeDriver();
 
         driver.get(baseUrl);
 
         // TODO Perform authentication
-        new Authenticator(driver).authenticate(userName, password);
-/*
+        //new Authenticator(driver).authenticate(userName, password);
+        new Downloader(downloaderDriver).download(baseUrl, fileName);
+
+        /*
         while(true) {
             System.out.println(driver.getCurrentUrl());
             Thread.sleep(5000);
